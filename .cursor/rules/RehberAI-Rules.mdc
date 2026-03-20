@@ -1,0 +1,24 @@
+---
+alwaysApply: true
+---
+
+# Teknoloji ve Mimari Standartları
+- Her zaman React ve Tailwind CSS kullan; harici .css dosyası oluşturma, tüm stilleri inline Tailwind sınıfları ile yapılandır.
+- Proje yapısını modern, modüler ve temiz tut; bileşenleri (components) ve mantığı (logic) birbirinden ayır.
+- Tasarımları "Mobile-First" (önce mobil) yaklaşımıyla yap; her zaman responsive (duyarlı) yapılar kur.
+
+# Yapay Zeka (Gemini API) Entegrasyonu
+- Google AI Studio entegrasyonu için "@google/generative-ai" kütüphanesini kullan[cite: 181].
+- API çağrısı sırasında kullanıcıya mutlaka görsel bir "Yükleniyor..." (loading state) veya iskelet ekran göster[cite: 160, 171].
+- Yapay zeka yanıtlarını (JSON veya metin) güvenli bir şekilde parse et ve hataları kullanıcıya nazikçe bildir[cite: 177, 181].
+
+# Güvenlik ve Çevresel Değişkenler
+- API anahtarını asla kodun içine doğrudan (hardcoded) yazma[cite: 168].
+- API anahtarı için her zaman ".env" dosyasındaki "VITE_GEMINI_API_KEY" değişkenini kullan.
+
+# Tasarım ve Kullanıcı Deneyimi (UX)
+- Tasarım dili: Modern, ferah ve minimalist. "rounded-lg", "shadow-md" ve yumuşak geçiş efektleri kullan.
+- Öğrenci koçluğu konseptine uygun olarak; dil kullanımını destekleyici, yargılamayan ve motive edici bir tonda tut.
+
+# Hata Yönetimi ve Terminal
+- Çalıştırma veya paket yükleme hataları oluştuğunda önce terminal mesajını analiz et ve düzeltmeyi "Agent" modunda otomatik uygula[cite: 151, 177].
