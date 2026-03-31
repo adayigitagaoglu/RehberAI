@@ -27,11 +27,11 @@ Projeyi geliştirmek için modern ve yapay zeka dostu aşağıdaki teknoloji yı
 * **Yayınlama (Deployment):** Lovable.
 * **Versiyon Kontrol:** GitHub.
 
-## ⚙️ Geliştiriciler İçin Local Kurulum (Nasıl Çalıştırılır?)
+## Geliştiriciler İçin Local Kurulum (Nasıl Çalıştırılır?)
 Bu projenin kaynak kodlarını kendi bilgisayarınızda (localhost) test etmek ve geliştirmek isterseniz aşağıdaki adımları izleyebilirsiniz:
 
 1. Repoyu bilgisayarınıza klonlayın:
-   git clone [https://github.com/](https://github.com/)[GITHUB_KULLANICI_ADIN]/RehberAI.git
+   git clone [github.com/adayigitagaoglu/RehberAI.git](https://github.com/adayigitagaoglu/RehberAI.git)
 2. Proje klasörüne girin ve gerekli bağımlılıkları yükleyin:
    cd RehberAI
    npm install
