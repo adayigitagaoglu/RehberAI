@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { analyzeWeeklyReport } from "../lib/analyzeWeeklyReport";
-import type { AnalysisResult, AnalysisRouteState } from "../types";
+import type { AnalysisResult, AnalysisRouteState, SilentGap } from "../types";
 import type { PlanRouteState } from "../../plan/types";
 
 const PROCESS_MESSAGES = [
@@ -13,19 +13,26 @@ const PROCESS_MESSAGES = [
 
 function LoadingCard({ message }: { message: string }) {
   return (
-    <div className="rounded-lg bg-white p-5 shadow-md sm:p-6">
+    <div className="rounded-xl bg-white p-6 shadow-[0_4px_12px_rgba(0,0,0,0.05)] sm:p-7">
       <div className="flex items-start gap-3">
-        <div className="mt-1 h-6 w-6 animate-spin rounded-full border-2 border-emerald-200 border-t-emerald-700" />
+        <div className="mt-1 h-6 w-6 animate-spin rounded-full border-2 border-[#00a896]/20 border-t-[#00a896]" />
         <div>
-          <div className="text-sm font-semibold">Yükleniyor…</div>
-          <div className="mt-1 text-sm text-slate-600">{message}</div>
+          <div className="text-lg font-semibold text-[#1a3b66]">Yükleniyor...</div>
+          <div className="mt-1 text-base text-slate-600">{message}</div>
         </div>
       </div>
       <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-slate-100">
-        <div className="h-full w-1/3 animate-pulse rounded-full bg-emerald-200" />
+        <div className="h-full w-1/3 animate-pulse rounded-full bg-[#00a896]/40" />
       </div>
     </div>
   );
+}
+
+function getSubjectLabel(gap: SilentGap) {
+  if (gap.subject && gap.subject.trim()) return gap.subject.trim();
+  const concept = gap.concept ?? "";
+  const parts = concept.split(/[:\-|]/).map((v) => v.trim()).filter(Boolean);
+  return parts[0] ?? "Genel";
 }
 
 export function AnalysisPage() {
@@ -40,6 +47,7 @@ export function AnalysisPage() {
   const [messageIndex, setMessageIndex] = useState(0);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [errorText, setErrorText] = useState<string>("");
+  const [checkedSteps, setCheckedSteps] = useState<Record<string, boolean>>({});
 
   const canStart = useMemo(() => {
     return typeof targetExam === "string" && typeof reportText === "string" && reportText.trim().length > 0;
@@ -64,6 +72,7 @@ export function AnalysisPage() {
     setStatus("loading");
     setErrorText("");
     setResult(null);
+    setCheckedSteps({});
     setMessageIndex(0);
     try {
       const analyzed = await analyzeWeeklyReport({ target_exam: targetExam!, reportText: reportText! });
@@ -75,24 +84,33 @@ export function AnalysisPage() {
     }
   }
 
+  const gapsBySubject = useMemo(() => {
+    if (!result) return [];
+    const grouped = new Map<string, SilentGap[]>();
+    result.silent_gaps.forEach((gap) => {
+      const subject = getSubjectLabel(gap);
+      const current = grouped.get(subject) ?? [];
+      current.push(gap);
+      grouped.set(subject, current);
+    });
+    return Array.from(grouped.entries());
+  }, [result]);
+
   return (
-    <div className="space-y-5">
-      <div className="rounded-lg bg-white p-5 shadow-md sm:p-6">
-        <div className="text-base font-semibold">Haftanı birlikte değerlendiriyoruz</div>
-        <div className="mt-1 text-sm text-slate-600">
+    <div className="space-y-7">
+      <div className="rounded-xl bg-white p-6 shadow-[0_4px_12px_rgba(0,0,0,0.05)] sm:p-7">
+        <div className="text-2xl font-bold text-[#1a3b66]">Haftanı birlikte değerlendiriyoruz</div>
+        <div className="mt-2 text-base text-slate-600">
           Kısa bir beklemeden sonra sana uygun önerileri ve planı göstereceğiz.
         </div>
       </div>
 
       {status === "idle" ? (
-        <div className="rounded-lg bg-white p-5 shadow-md sm:p-6">
-          <div className="text-sm text-slate-700">
-            Hazırsan analizini başlat, raporunu sadece bu adımda işliyoruz.
-          </div>
+        <div className="rounded-xl bg-white p-6 shadow-[0_4px_12px_rgba(0,0,0,0.05)] sm:p-7">
           <div className="mt-4">
             <button
               type="button"
-              className="rounded-lg bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-emerald-700"
+              className="rounded-xl bg-[#00a896] px-5 py-3 text-base font-semibold text-white shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition hover:bg-[#00897e]"
               onClick={handleAnalyzeClick}
             >
               Analizi başlat
@@ -106,12 +124,12 @@ export function AnalysisPage() {
       ) : null}
 
       {status === "error" ? (
-        <div className="rounded-lg border border-rose-200 bg-rose-50 p-5 shadow-md sm:p-6">
-          <div className="text-sm font-semibold text-rose-900">Bir aksilik oldu.</div>
-          <div className="mt-2 text-sm text-rose-800">{errorText}</div>
+        <div className="rounded-xl border border-rose-200 bg-rose-50 p-6 shadow-[0_4px_12px_rgba(0,0,0,0.05)] sm:p-7">
+          <div className="text-lg font-semibold text-rose-900">Bir aksilik oldu.</div>
+          <div className="mt-2 text-base text-rose-800">{errorText}</div>
           <div className="mt-4">
             <button
-              className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-slate-800 shadow-md transition hover:bg-slate-50"
+              className="rounded-xl bg-white px-4 py-2 text-base font-semibold text-slate-800 shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition hover:bg-slate-50"
               type="button"
               onClick={handleAnalyzeClick}
             >
@@ -122,58 +140,83 @@ export function AnalysisPage() {
       ) : null}
 
       {status === "success" && result ? (
-        <div className="space-y-4">
-          <div className="rounded-lg bg-white p-5 shadow-md sm:p-6">
-            <div className="flex items-center justify-between gap-4">
-              <div className="text-sm font-semibold text-slate-800">Duygu durumu</div>
-              <div className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-900">
-                Sana uygunluk puanı: {Math.round(result.score)}/100
-              </div>
-            </div>
-            <div className="mt-3 text-sm leading-6 text-slate-700">
+        <div className="space-y-6">
+          <div className="rounded-xl bg-white p-6 shadow-[0_4px_12px_rgba(0,0,0,0.05)] sm:p-7">
+            <div className="text-xl font-semibold text-[#1a3b66]">Genel durum</div>
+            <div className="mt-3 text-base leading-7 text-slate-700">
               {result.mental_state_summary}
             </div>
           </div>
 
-          <div className="rounded-lg bg-white p-5 shadow-md sm:p-6">
-            <div className="text-sm font-semibold text-slate-800">Gözlemler</div>
+          <div className="rounded-xl bg-white p-6 shadow-[0_4px_12px_rgba(0,0,0,0.05)] sm:p-7">
+            <div className="text-xl font-semibold text-[#1a3b66]">Gözlemler</div>
             <div className="mt-3 grid gap-2">
               {result.behavioral_findings.map((t, idx) => (
-                <div key={idx} className="rounded-lg border border-slate-100 bg-slate-50 p-3 text-sm text-slate-700">
+                <div key={idx} className="rounded-xl border border-slate-100 bg-slate-50 p-4 text-base text-slate-700">
                   {t}
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="rounded-lg bg-white p-5 shadow-md sm:p-6">
-            <div className="text-sm font-semibold text-slate-800">Gelişim noktaları</div>
-            <div className="mt-3 space-y-3">
-              {result.silent_gaps.map((g, idx) => (
-                <div key={idx} className="rounded-lg border border-slate-200 p-4">
-                  <div className="text-sm font-semibold text-slate-900">{g.concept}</div>
-                  <div className="mt-1 text-xs font-semibold text-slate-600">
-                    Başlangıç noktası: {g.prerequisite}
-                  </div>
-                  <div className="mt-2 text-sm text-slate-700">{g.diagnosis}</div>
-                  <div className="mt-2 text-xs text-slate-600">{g.evidence}</div>
-                  <div className="mt-3">
-                    <div className="text-xs font-semibold text-slate-700">Önerilen sonraki adımlar</div>
-                    <ul className="mt-2 list-disc pl-5 text-sm text-slate-700">
-                      {g.recommendedNextSteps.map((s, i) => (
-                        <li key={i}>{s}</li>
-                      ))}
-                    </ul>
-                  </div>
+          <div className="space-y-4">
+            {gapsBySubject.map(([subject, gaps]) => (
+              <div key={subject} className="rounded-xl bg-white p-6 shadow-[0_4px_12px_rgba(0,0,0,0.05)] sm:p-7">
+                <div className="text-xl font-semibold text-[#1a3b66]">{subject}</div>
+                <div className="mt-4 space-y-4">
+                  {gaps.map((g, gapIdx) => (
+                    <div key={`${subject}_${gapIdx}`} className="rounded-xl border border-slate-200 p-4">
+                      <h3 className="text-lg font-semibold text-[#1a3b66]">{g.concept}</h3>
+                      <div className="mt-1 text-base text-slate-600">Başlangıç noktası: {g.prerequisite}</div>
+                      <div className="mt-2 text-base text-slate-700">{g.diagnosis}</div>
+                      <blockquote className="mt-3 text-base italic text-slate-500">"{g.evidence}"</blockquote>
+                      <div className="mt-4 text-lg font-semibold text-[#1a3b66]">Önerilen adımlar</div>
+                      <div className="mt-3 space-y-2">
+                        {g.recommendedNextSteps.map((step, stepIdx) => {
+                          const key = `${subject}_${gapIdx}_${stepIdx}`;
+                          const checked = !!checkedSteps[key];
+                          return (
+                            <label
+                              key={key}
+                              className={[
+                                "flex cursor-pointer items-start gap-3 rounded-xl border p-3 transition",
+                                checked
+                                  ? "border-[#00a896]/40 bg-[#e6fffa]"
+                                  : "border-slate-200 bg-white hover:bg-slate-50"
+                              ].join(" ")}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={checked}
+                                onChange={(e) => {
+                                  setCheckedSteps((prev) => ({ ...prev, [key]: e.target.checked }));
+                                }}
+                                className="mt-1 h-4 w-4 accent-[#00a896]"
+                              />
+                              <span className={["text-base text-slate-700", checked ? "line-through" : ""].join(" ")}>
+                                {step}
+                              </span>
+                            </label>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
+            ))}
+          </div>
+
+          <div className="rounded-xl border border-[#ffbf00]/30 bg-[#ffbf00]/15 p-5">
+            <div className="text-base text-[#1a3b66]">
+              Küçük adımları işaretledikçe ilerlemeni daha net görebilirsin.
             </div>
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
             <button
               type="button"
-              className="rounded-lg bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-emerald-700"
+              className="rounded-xl bg-[#00a896] px-5 py-3 text-base font-semibold text-white shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition hover:bg-[#00897e]"
               onClick={() => {
                 navigate("/plan", {
                   state: {

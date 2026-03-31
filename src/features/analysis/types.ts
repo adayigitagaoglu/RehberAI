@@ -1,6 +1,7 @@
 export type ExamType = "YKS" | "LGS" | "Üniversite";
 
 export type SilentGap = {
+  subject?: string;
   concept: string;
   prerequisite: string;
   diagnosis: string;
@@ -26,7 +27,6 @@ export type AnalysisResult = {
   behavioral_findings: string[];
   silent_gaps: SilentGap[];
   daily_plan: DailyPlanDay[];
-  score: number; // 0..100
 };
 
 export type AnalysisRouteState = {

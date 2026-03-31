@@ -23,6 +23,7 @@ Kullanıcının haftalık serbest metnini analiz et; mental durumunu değerlendi
 
 Kapsam:
 - "Sessiz kopuşlar" için önce ilgili kavramı (ör. Üslü Sayılar) sonra prerequisite (ör. 9. sınıf Üslü Sayılar temeli / alt önkoşul) belirt.
+- Her sessiz kopuşu mutlaka bir ders alanına bağla (ör. Matematik, Fizik, Türkçe, Biyoloji).
 - Planı suçluluk yaratmadan ve gerçekçi günlük mini adımlarla yaz.
 - 7 günün tamamı kullanılabilir olmalı; eğer kullanıcı çok yoğunsa her güne "hafif bir seçenek" de eklemeyi düşün.
 
@@ -34,6 +35,7 @@ Schema:
   "behavioral_findings": string[],
   "silent_gaps": [
     {
+      "subject": string,
       "concept": string,
       "prerequisite": string,
       "diagnosis": string,
@@ -54,8 +56,7 @@ Schema:
         }
       ]
     }
-  ],
-  "score": number
+  ]
 }
 
 Girdiler:
@@ -88,8 +89,7 @@ function validateResult(value) {
     typeof value.mental_state_summary !== "string" ||
     !Array.isArray(value.behavioral_findings) ||
     !Array.isArray(value.silent_gaps) ||
-    !Array.isArray(value.daily_plan) ||
-    typeof value.score !== "number"
+    !Array.isArray(value.daily_plan)
   ) {
     throw new Error("Geçersiz analiz çıktısı: şema alanları eksik.");
   }

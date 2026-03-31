@@ -19,18 +19,18 @@ export function WelcomePage() {
   }, []);
 
   return (
-    <div className="space-y-5">
-      <div className="rounded-lg bg-white p-5 shadow-md sm:p-6">
-        <div className="text-lg font-semibold">Başlayalım, seni dinliyorum.</div>
-        <div className="mt-2 text-sm leading-6 text-slate-600">
+    <div className="space-y-7">
+      <div className="rounded-xl bg-white p-6 shadow-[0_4px_12px_rgba(0,0,0,0.05)] sm:p-7">
+        <div className="text-2xl font-bold text-[#1a3b66]">Başlayalım, seni dinliyorum.</div>
+        <div className="mt-3 text-base leading-7 text-slate-600">
           Bu hafta nasıl geçtiğini birlikte toparlayalım; sana uygun, gerçekçi
           bir 7 günlük çalışma planı oluşturalım.
         </div>
       </div>
 
-      <div className="rounded-lg bg-white p-5 shadow-md sm:p-6">
-        <div className="text-sm font-semibold text-slate-800">Şu an odak noktan hangisi?</div>
-        <div className="mt-4 grid gap-3">
+      <div className="rounded-xl bg-white p-6 shadow-[0_4px_12px_rgba(0,0,0,0.05)] sm:p-7">
+        <div className="text-xl font-semibold text-[#1a3b66]">Şu an odak noktan hangisi?</div>
+        <div className="mt-5 grid gap-4">
           {EXAMS.map((e) => {
             const isActive = e.id === exam;
             return (
@@ -39,30 +39,30 @@ export function WelcomePage() {
                 type="button"
                 onClick={() => setExam(e.id)}
                 className={[
-                  "text-left rounded-lg border p-4 transition",
+                  "text-left rounded-xl border p-4 transition",
                   isActive
-                    ? "border-emerald-200 bg-emerald-50"
+                    ? "border-[#00a896]/40 bg-[#00a896]/10"
                     : "border-slate-200 bg-white hover:bg-slate-50"
                 ].join(" ")}
               >
                 <div className="flex items-baseline justify-between gap-3">
-                  <div className="font-semibold">{e.label}</div>
+                  <div className="text-lg font-semibold text-[#1a3b66]">{e.label}</div>
                   {isActive ? (
-                    <div className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-900">
+                    <div className="rounded-full bg-[#00a896] px-3 py-1 text-base font-semibold text-white">
                       Seçili
                     </div>
                   ) : null}
                 </div>
-                <div className="mt-1 text-xs text-slate-600">{e.hint}</div>
+                <div className="mt-2 text-base text-slate-600">{e.hint}</div>
               </button>
             );
           })}
         </div>
 
-        <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
           <button
             type="button"
-            className="rounded-lg bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-emerald-700"
+            className="rounded-xl bg-[#00a896] px-5 py-3 text-base font-semibold text-white shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition hover:bg-[#00897e]"
             onClick={() => {
               localStorage.setItem("rehberai_target_exam", exam);
               navigate("/input");
