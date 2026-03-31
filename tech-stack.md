@@ -7,9 +7,9 @@ Bu belge, RehberAI projesinde kullanılan teknolojileri, bu teknolojilerin seçi
 Projenin geliştirilmesinde aşağıdaki modern ve Al dostu teknoloji yığını tercih edilmiştir:
 
 * **Frontend (Arayüz):** React + Tailwind CSS.
-* **Yapay Zeka Modeli:** Gemini 1.5 Flash (Google AI Studio üzerinden).
+* **Yapay Zeka Modeli:** Gemini 2.5 Flash (Google AI Studio üzerinden).
 * **Geliştirme Ortamı (Editor):** Cursor AI.
-* **Yayınlama (Deployment):** Lovable.
+* **Yayınlama (Deployment):** Netlify.
 * **Versiyon Kontrol:** GitHub.
 
 ## Neden Bu Teknolojiler Seçildi?
