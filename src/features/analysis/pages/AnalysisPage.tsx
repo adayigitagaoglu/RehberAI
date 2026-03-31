@@ -5,10 +5,10 @@ import type { AnalysisResult, AnalysisRouteState } from "../types";
 import type { PlanRouteState } from "../../plan/types";
 
 const PROCESS_MESSAGES = [
-  "Geçen haftaki odak süren kıyaslanıyor...",
-  "Matematik hiyerarşisinde sessiz kopuşlar aranıyor...",
-  "Mental durumun için şefkatli bir dil kurgulanıyor...",
-  "7 gün için esnek plan hazırlanıyor..."
+  "Haftanı adım adım inceliyoruz...",
+  "Seni en çok zorlayan noktalara bakıyoruz...",
+  "Anlattıklarını sade bir özet haline getiriyoruz...",
+  "Son dokunuş: 7 günlük planını hazırlıyoruz..."
 ];
 
 function LoadingCard({ message }: { message: string }) {
@@ -36,7 +36,7 @@ export function AnalysisPage() {
   const targetExam = routeState.target_exam;
   const reportText = routeState.reportText;
 
-  const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [messageIndex, setMessageIndex] = useState(0);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [errorText, setErrorText] = useState<string>("");
@@ -48,40 +48,58 @@ export function AnalysisPage() {
   useEffect(() => {
     if (!canStart) {
       navigate("/input", { replace: true });
-      return;
     }
+  }, [canStart, navigate]);
 
-    let interval: number | undefined;
-    interval = window.setInterval(() => {
+  useEffect(() => {
+    if (status !== "loading") return;
+    const interval = window.setInterval(() => {
       setMessageIndex((i) => (i + 1) % PROCESS_MESSAGES.length);
     }, 1400);
+    return () => window.clearInterval(interval);
+  }, [status]);
 
-    (async () => {
-      try {
-        const analyzed = await analyzeWeeklyReport({ target_exam: targetExam!, reportText: reportText! });
-        setResult(analyzed);
-        setStatus("success");
-      } catch (err: any) {
-        setErrorText(err?.message ?? "Beklenmeyen bir hata oluştu.");
-        setStatus("error");
-      } finally {
-        if (interval) window.clearInterval(interval);
-      }
-    })();
-
-    return () => {
-      if (interval) window.clearInterval(interval);
-    };
-  }, [canStart, navigate, reportText, targetExam]);
+  async function handleAnalyzeClick() {
+    if (!canStart || status === "loading") return;
+    setStatus("loading");
+    setErrorText("");
+    setResult(null);
+    setMessageIndex(0);
+    try {
+      const analyzed = await analyzeWeeklyReport({ target_exam: targetExam!, reportText: reportText! });
+      setResult(analyzed);
+      setStatus("success");
+    } catch (err: any) {
+      setErrorText(err?.message ?? "Beklenmeyen bir hata oluştu.");
+      setStatus("error");
+    }
+  }
 
   return (
     <div className="space-y-5">
       <div className="rounded-lg bg-white p-5 shadow-md sm:p-6">
-        <div className="text-base font-semibold">Analiz ve teşhis</div>
+        <div className="text-base font-semibold">Haftanı birlikte değerlendiriyoruz</div>
         <div className="mt-1 text-sm text-slate-600">
-          Süreci acele etmiyoruz; verileri şefkatli bir çerçevede tarıyoruz.
+          Kısa bir beklemeden sonra sana uygun önerileri ve planı göstereceğiz.
         </div>
       </div>
+
+      {status === "idle" ? (
+        <div className="rounded-lg bg-white p-5 shadow-md sm:p-6">
+          <div className="text-sm text-slate-700">
+            Hazırsan analizini başlat, raporunu sadece bu adımda işliyoruz.
+          </div>
+          <div className="mt-4">
+            <button
+              type="button"
+              className="rounded-lg bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-emerald-700"
+              onClick={handleAnalyzeClick}
+            >
+              Analizi başlat
+            </button>
+          </div>
+        </div>
+      ) : null}
 
       {status === "loading" ? (
         <LoadingCard message={PROCESS_MESSAGES[messageIndex]} />
@@ -89,13 +107,13 @@ export function AnalysisPage() {
 
       {status === "error" ? (
         <div className="rounded-lg border border-rose-200 bg-rose-50 p-5 shadow-md sm:p-6">
-          <div className="text-sm font-semibold text-rose-900">Üzgünüz…</div>
+          <div className="text-sm font-semibold text-rose-900">Bir aksilik oldu.</div>
           <div className="mt-2 text-sm text-rose-800">{errorText}</div>
           <div className="mt-4">
             <button
               className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-slate-800 shadow-md transition hover:bg-slate-50"
               type="button"
-              onClick={() => navigate("/input")}
+              onClick={handleAnalyzeClick}
             >
               Tekrar dene
             </button>
@@ -107,9 +125,9 @@ export function AnalysisPage() {
         <div className="space-y-4">
           <div className="rounded-lg bg-white p-5 shadow-md sm:p-6">
             <div className="flex items-center justify-between gap-4">
-              <div className="text-sm font-semibold text-slate-800">Mental durum</div>
+              <div className="text-sm font-semibold text-slate-800">Duygu durumu</div>
               <div className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-900">
-                Uyum skoru: {Math.round(result.score)}/100
+                Sana uygunluk puanı: {Math.round(result.score)}/100
               </div>
             </div>
             <div className="mt-3 text-sm leading-6 text-slate-700">
@@ -118,7 +136,7 @@ export function AnalysisPage() {
           </div>
 
           <div className="rounded-lg bg-white p-5 shadow-md sm:p-6">
-            <div className="text-sm font-semibold text-slate-800">Davranışsal tespitler</div>
+            <div className="text-sm font-semibold text-slate-800">Gözlemler</div>
             <div className="mt-3 grid gap-2">
               {result.behavioral_findings.map((t, idx) => (
                 <div key={idx} className="rounded-lg border border-slate-100 bg-slate-50 p-3 text-sm text-slate-700">
@@ -129,12 +147,14 @@ export function AnalysisPage() {
           </div>
 
           <div className="rounded-lg bg-white p-5 shadow-md sm:p-6">
-            <div className="text-sm font-semibold text-slate-800">Sessiz kopuş teşhisleri</div>
+            <div className="text-sm font-semibold text-slate-800">Gelişim noktaları</div>
             <div className="mt-3 space-y-3">
               {result.silent_gaps.map((g, idx) => (
                 <div key={idx} className="rounded-lg border border-slate-200 p-4">
                   <div className="text-sm font-semibold text-slate-900">{g.concept}</div>
-                  <div className="mt-1 text-xs font-semibold text-slate-600">Önkoşul: {g.prerequisite}</div>
+                  <div className="mt-1 text-xs font-semibold text-slate-600">
+                    Başlangıç noktası: {g.prerequisite}
+                  </div>
                   <div className="mt-2 text-sm text-slate-700">{g.diagnosis}</div>
                   <div className="mt-2 text-xs text-slate-600">{g.evidence}</div>
                   <div className="mt-3">

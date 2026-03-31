@@ -20,9 +20,9 @@ export function InputPage() {
   return (
     <div className="space-y-5">
       <div className="rounded-lg bg-white p-5 shadow-md sm:p-6">
-        <div className="text-base font-semibold">Haftanı dök.</div>
+        <div className="text-base font-semibold">Haftanı içinden geldiği gibi yaz.</div>
         <div className="mt-1 text-sm text-slate-600">
-          Ne kadar doğal anlatırsan analiz o kadar derin olur.
+          Kısa ya da uzun fark etmez; ne kadar açık yazarsan o kadar iyi yol haritası çıkar.
         </div>
       </div>
 
@@ -35,15 +35,17 @@ export function InputPage() {
         </div>
 
         <label className="mt-4 block">
-          <div className="text-sm font-semibold text-slate-800">Haftalık rapor</div>
+          <div className="text-sm font-semibold text-slate-800">Haftalık notun</div>
           <textarea
             value={reportText}
             onChange={(e) => setReportText(e.target.value)}
+            spellCheck={false}
+            lang="tr"
             className="mt-2 min-h-40 w-full resize-none rounded-lg border border-slate-200 bg-white p-3 text-sm shadow-sm focus:border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-100"
-            placeholder='Örnek: "Bu hafta çok yorgundum, matematikte logaritma sorularına bakınca içim daraldı. Hiç çalışamadım..."\n\nİstersen şu sorulara da değinebilirsin: Bu hafta seni en çok ne zorladı? Hangi konularda odaklanma sorunu yaşadın?'
+            placeholder='Örnek: "Bu hafta çok yorgundum. Matematikte logaritma sorularına başlayınca zorlandım ve düzenim bozuldu."\n\nİstersen şunlardan da bahsedebilirsin: Bu hafta seni en çok ne zorladı? Hangi derste takıldın?'
           />
           <div className="mt-2 text-xs text-slate-600">
-            En az 20 karakter yazmanı öneririm.
+            En az 20 karakter yazdığında daha net öneriler alırsın.
           </div>
         </label>
 

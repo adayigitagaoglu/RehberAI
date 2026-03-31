@@ -11,7 +11,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <div className="leading-tight">
               <div className="text-base font-semibold">RehberAI</div>
               <div className="text-xs text-slate-600">
-                Yargılamayan eğitim koçu
+                Çalışma yol arkadaşın
               </div>
             </div>
           </Link>

@@ -54,7 +54,7 @@ export function PlanPage() {
       <div className="rounded-lg bg-white p-5 shadow-md sm:p-6">
         <div className="text-base font-semibold">7 günlük esnek plan</div>
         <div className="mt-1 text-sm text-slate-600">
-          Bugün kendine karşı değil, kendin için çalışıyorsun.
+          Küçük ama düzenli adımlarla ilerleyelim.
         </div>
       </div>
 
@@ -107,7 +107,9 @@ export function PlanPage() {
                           </div>
                         ) : null}
                         {t.silent_gap_link ? (
-                          <div className="mt-1 text-xs text-slate-600">Bağ: {t.silent_gap_link}</div>
+                          <div className="mt-1 text-xs text-slate-600">
+                            İlgili nokta: {t.silent_gap_link}
+                          </div>
                         ) : null}
                         {isLight ? (
                           <div className="mt-1 text-xs text-slate-600">
@@ -141,7 +143,7 @@ export function PlanPage() {
           <div>
             <div className="text-sm font-semibold text-slate-800">İleriye taşı</div>
             <div className="mt-1 text-sm text-slate-600">
-              Bu hafta bittiğinde tekrar rapor yazıp yeni planını alacaksın.
+              Bu hafta bitince yeniden yaz, bir sonraki planını birlikte çıkaralım.
             </div>
           </div>
           <button

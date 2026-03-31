@@ -21,15 +21,15 @@ export function WelcomePage() {
   return (
     <div className="space-y-5">
       <div className="rounded-lg bg-white p-5 shadow-md sm:p-6">
-        <div className="text-lg font-semibold">Seni dinliyorum.</div>
+        <div className="text-lg font-semibold">Başlayalım, seni dinliyorum.</div>
         <div className="mt-2 text-sm leading-6 text-slate-600">
-          Bu uygulama haftalık raporlarını analiz edip sana suçluluk yaratmadan
-          uygulanabilir bir 7 günlük plan çıkarır.
+          Bu hafta nasıl geçtiğini birlikte toparlayalım; sana uygun, gerçekçi
+          bir 7 günlük çalışma planı oluşturalım.
         </div>
       </div>
 
       <div className="rounded-lg bg-white p-5 shadow-md sm:p-6">
-        <div className="text-sm font-semibold text-slate-800">Önceliğin hangisi?</div>
+        <div className="text-sm font-semibold text-slate-800">Şu an odak noktan hangisi?</div>
         <div className="mt-4 grid gap-3">
           {EXAMS.map((e) => {
             const isActive = e.id === exam;

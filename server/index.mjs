@@ -104,17 +104,31 @@ async function analyzeWeeklyReportServer({ target_exam, reportText }) {
   }
 
   const genAI = new GoogleGenerativeAI(apiKey);
-  let model;
-  try {
-    model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-  } catch {
-    model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+  const prompt = buildPrompt({ target_exam, reportText });
+
+  // Prefer requested model first, then gracefully fall back if endpoint/model availability changes.
+  const modelCandidates = ["gemini-2.5-flash", "gemini-2.5-flash-lite"];
+  let lastError = null;
+  let text = "";
+
+  for (const candidate of modelCandidates) {
+    try {
+      const model = genAI.getGenerativeModel({ model: candidate });
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      text = response.text();
+      break;
+    } catch (err) {
+      lastError = err;
+    }
   }
 
-  const prompt = buildPrompt({ target_exam, reportText });
-  const result = await model.generateContent(prompt);
-  const response = await result.response;
-  const text = response.text();
+  if (!text) {
+    throw new Error(
+      lastError?.message ??
+        "Gemini yanıtı alınamadı. Lütfen model erişimini ve API anahtarını kontrol edin.",
+    );
+  }
 
   const parsed = extractJson(text);
   return validateResult(parsed);
