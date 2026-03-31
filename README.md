@@ -17,7 +17,7 @@ RehberAI, sıradan planlama uygulamalarının aksine öğrenciyi yargılamadan d
 
 ## Canlı Demo
 * **Yayın Linki:** https://rehberai.netlify.app
-* **Demo Video:** [Loom video linkini buraya ekle]
+* **Demo Video:** https://www.loom.com/share/1514a4aa6201401db7e7295cadc7a5d2
 
 ## Kullanılan Teknolojiler
 Projeyi geliştirmek için modern ve yapay zeka dostu aşağıdaki teknoloji yığını tercih edilmiştir:
