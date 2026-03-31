@@ -16,7 +16,7 @@ RehberAI, sıradan planlama uygulamalarının aksine öğrenciyi yargılamadan d
 * **Dinamik Planlama:** Öğrencinin hayat koşullarına uygun, suçluluk hissettirmeyen, esnek ve gerçekçi 7 günlük mini yol haritaları hazırlar.
 
 ## Canlı Demo
-* **Yayın Linki:** [Lovable yayın linkini buraya ekle]
+* **Yayın Linki:** https://rehberai.netlify.app
 * **Demo Video:** [Loom video linkini buraya ekle]
 
 ## Kullanılan Teknolojiler
@@ -24,7 +24,7 @@ Projeyi geliştirmek için modern ve yapay zeka dostu aşağıdaki teknoloji yı
 * **Frontend (Arayüz):** React + Tailwind CSS.
 * **Yapay Zeka Modeli:** Gemini 2.5 Flash (Google AI Studio üzerinden).
 * **Geliştirme Ortamı:** Cursor AI.
-* **Yayınlama (Deployment):** Lovable.
+* **Yayınlama (Deployment):** Netlify.
 * **Versiyon Kontrol:** GitHub.
 
 ## Geliştiriciler İçin Local Kurulum (Nasıl Çalıştırılır?)
