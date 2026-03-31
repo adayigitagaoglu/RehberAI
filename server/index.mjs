@@ -62,11 +62,20 @@ Schema:
 Girdiler:
 - target_exam: ${target_exam}
 - weekly_report: ${JSON.stringify(reportText)}
+YANITI SADECE VE SADECE GEÇERLİ BİR JSON FORMATINDA VER. BAŞINA, SONUNA VEYA İÇİNE \`\`\`json GİBİ HİÇBİR MARKDOWN İŞARETİ VEYA AÇIKLAMA METNİ EKLEME.
 `;
 }
 
+function sanitizeModelResponse(text) {
+  return String(text ?? "")
+    .replace(/^\s*```(?:json)?\s*/i, "")
+    .replace(/\s*```\s*$/i, "")
+    .replace(/```(?:json)?/gi, "")
+    .trim();
+}
+
 function extractJson(text) {
-  const trimmed = String(text ?? "").trim();
+  const trimmed = sanitizeModelResponse(text);
   try {
     return JSON.parse(trimmed);
   } catch {
